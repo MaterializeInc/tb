@@ -84,7 +84,7 @@ public class Binlogger implements Consumer<SourceRecord> {
         b = b.with("database.dbname", db);
         b = b.with("database.server.name", "binlogger");
         b = b.with("offset.storage.file.filename", "/dev/null");
-        b = b.with("plugin.name", "wal2json");
+        b = b.with("plugin.name", "pgoutput");
 
         Configuration config = b.build();
         System.out.println("config built: " + config.toString());
