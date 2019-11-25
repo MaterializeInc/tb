@@ -10,7 +10,6 @@ import io.debezium.config.Configuration.Builder;
 import io.debezium.embedded.EmbeddedEngine;
 import java.util.concurrent.Executors;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.Executor;
@@ -19,9 +18,26 @@ import java.util.function.Consumer;
 import org.apache.kafka.connect.source.SourceRecord;
 
 public class Binlogger implements Consumer<SourceRecord> {
+    BufferedWriter bw;
+
+    public Binlogger(String s) {
+        try {
+            FileWriter f = new FileWriter(s);
+            bw = new BufferedWriter(f);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+            System.exit(1);
+        }
+    }
 
     public void accept(SourceRecord s) {
-        System.out.println(">>>> " + s.toString());
+        try {
+            bw.write(s.toString());
+            bw.newLine();
+            bw.flush();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
@@ -35,6 +51,8 @@ public class Binlogger implements Consumer<SourceRecord> {
         parser.addArgument("-s", "--hostname").help("Database hostname");
         parser.addArgument("-d", "--database").help("Database");
         parser.addArgument("-u", "--user").help("User");
+
+        parser.addArgument("-f", "--file").help("file");
 
         Namespace ns = null;
         try {
@@ -50,6 +68,7 @@ public class Binlogger implements Consumer<SourceRecord> {
         String port = ns.get("port");
         String hostname = ns.get("hostname");
         String user = ns.get("user");
+        String file = ns.get("file");
 
         System.out.println("DEBUG: starting binlogger in mode " + db + " and outputting to " + output);
 
@@ -66,6 +85,11 @@ public class Binlogger implements Consumer<SourceRecord> {
         if (port == null) {
             System.out.println("port is null, defaulting to 5432");
             port = "5432";
+        }
+
+        if (file == null) {
+            System.out.println("file is null, defaulting to cdc.json");
+            file = "cdc.json";
         }
 
         Builder b = Configuration.create();
@@ -87,8 +111,7 @@ public class Binlogger implements Consumer<SourceRecord> {
         b = b.with("plugin.name", "pgoutput");
 
         Configuration config = b.build();
-        System.out.println("config built: " + config.toString());
-        Binlogger bl = new Binlogger();
+        Binlogger bl = new Binlogger(file);
 
         // Create the engine with this configuration ...
         EmbeddedEngine engine = EmbeddedEngine.create().using(config).notifying(bl::accept).build();
@@ -96,16 +119,6 @@ public class Binlogger implements Consumer<SourceRecord> {
         // Run the engine asynchronously ...
         Executor executor = Executors.newSingleThreadExecutor();
         executor.execute(engine);
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ie) {
-
-        }
-
-        System.out.println("executor:" + executor.toString());
-        System.out.println("running: " + engine.isRunning());
-        System.out.println("engine: " + engine.toString());
 
     }
 }
