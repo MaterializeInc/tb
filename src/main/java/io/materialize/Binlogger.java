@@ -92,10 +92,6 @@ public class Binlogger implements Consumer<SourceRecord> {
 
         // Create the engine with this configuration ...
         EmbeddedEngine engine = EmbeddedEngine.create().using(config).notifying(bl::accept).build();
-
-        // Run the engine asynchronously ...
-        Executor executor = Executors.newSingleThreadExecutor();
-        executor.execute(engine);
-
+        engine.run();
     }
 }
