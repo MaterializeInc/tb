@@ -84,7 +84,7 @@ public class Binlogger implements Consumer<SourceRecord> {
         b = b.with("database.user", user);
         b = b.with("database.dbname", db);
         b = b.with("database.server.name", "binlogger");
-        b = b.with("offset.storage.file.filename", "/dev/null");
+        b = b.with("offset.storage.file.filename", "/dev/null"); // TODO: support resuming(#1).
         b = b.with("plugin.name", "pgoutput");
 
         Configuration config = b.build();
