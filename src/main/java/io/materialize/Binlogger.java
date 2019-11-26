@@ -44,15 +44,15 @@ public class Binlogger implements Consumer<SourceRecord> {
 
         ArgumentParser parser = ArgumentParsers.newFor("Binlogger").build().defaultHelp(true)
                 .description("Streaming CDC out of database binlogs (currently supported: mysql and postgres");
-        parser.addArgument("-t", "--type").choices("mysql", "postgres").setDefault("mysql")
+        parser.addArgument("-t", "--type").choices("mysql", "postgres").setDefault("postgres")
                 .help("Specify which database to binlog");
         // parser.addArgument("-o", "--output").help("Destination to stream output to");
-        parser.addArgument("-p", "--port").help("Database port");
-        parser.addArgument("-s", "--hostname").help("Database hostname");
-        parser.addArgument("-d", "--database").help("Database");
-        parser.addArgument("-u", "--user").help("User");
+        parser.addArgument("-p", "--port").help("Database port").setDefault("5432");
+        parser.addArgument("-s", "--hostname").help("Database hostname").setDefault("localhost");
+        parser.addArgument("-d", "--database").help("Database").setDefault("postgres");
+        parser.addArgument("-u", "--user").help("User").setDefault("postgres");
 
-        parser.addArgument("-f", "--file").help("file");
+        parser.addArgument("-f", "--file").help("file").setDefault("cdc.json");
 
         Namespace ns = null;
         try {
@@ -64,33 +64,10 @@ public class Binlogger implements Consumer<SourceRecord> {
 
         String db = ns.get("database");
         String type = ns.get("type");
-        String output = ns.get("output");
         String port = ns.get("port");
         String hostname = ns.get("hostname");
         String user = ns.get("user");
         String file = ns.get("file");
-
-        System.out.println("DEBUG: starting binlogger in mode " + db + " and outputting to " + output);
-
-        if (user == null) {
-            System.out.println("user is null, defaulting to postgres");
-            user = "postgres";
-        }
-
-        if (hostname == null) {
-            System.out.println("host is null, defaulting to localhost");
-            hostname = "localhost";
-        }
-
-        if (port == null) {
-            System.out.println("port is null, defaulting to 5432");
-            port = "5432";
-        }
-
-        if (file == null) {
-            System.out.println("file is null, defaulting to cdc.json");
-            file = "cdc.json";
-        }
 
         Builder b = Configuration.create();
 
