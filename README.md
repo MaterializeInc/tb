@@ -1,4 +1,4 @@
-`tb` `tails` database `binlogs`. You point it at a database, and it streams
+`tb` **t**ails database **b**inlogs. You point it at a database, and it streams
 every write that is made to the database into a file. You can tail this file
 and process it with any unix tool such as `jq` or `awk`, or something more
 full-fledged. This lets you fire push-based events when something of interest
@@ -12,7 +12,7 @@ Kafka, using the Kafka connect framework. `tb` is intended to be a lightweight
 tool, suitable for running on your laptop or against a single
 unreplicated database. The intent is to enable a prototyping experience that
 doesn't require 6 containers tethered together in an intricate `docker-compose`
-setup, while still being very easily translated to existing Kafka 
+setup, while still being very easily translatable to existing Kafka 
 infrastructure.
 
 The exact semantics of change data capture
@@ -25,7 +25,7 @@ best practices for database replication. If your database is up-to-date and
 running in a replicated setup, it should be seamless to connect `tb` to it,
 with minimal modification.
 
-Currently, `tb` supports Postgres, with work in progress to support MySQL.
+Currently, `tb` supports Postgres (10+ recommended) and MySQL.
 
 
 
