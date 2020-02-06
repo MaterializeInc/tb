@@ -4,26 +4,39 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.materialize</groupId>
-  <artifactId>binlogger</artifactId>
+  <artifactId>tb</artifactId>
+  <name>tb</name>
   <version>0.1-SNAPSHOT</version>
-
-  <name>binlogger</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.github.com/rjnn/binlogger</url>
+  <url>https://github.com/MaterializeInc/tb</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <jackson.version>2.10.0</jackson.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>maven</id>
+      <name>Maven Central</name>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+    <!-- needed for io.confluent packages -->
+    <repository>
+      <id>confluent</id>
+      <name>Confluent</name>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
+      <groupId>net.sourceforge.argparse4j</groupId>
+      <artifactId>argparse4j</artifactId>
+      <version>0.8.1</version>
     </dependency>
+    <!-- schema management/introspection -->
     <dependency>
       <groupId>io.debezium</groupId>
       <artifactId>debezium-embedded</artifactId>
@@ -39,10 +52,23 @@
       <artifactId>debezium-connector-postgres</artifactId>
       <version>0.10.0.Final</version>
     </dependency>
+    <!-- serialization -->
     <dependency>
-      <groupId>net.sourceforge.argparse4j</groupId>
-      <artifactId>argparse4j</artifactId>
-      <version>0.8.1</version>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>connect-api</artifactId>
+      <version>2.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.confluent</groupId>
+      <artifactId>kafka-connect-avro-converter</artifactId>
+      <version>5.2.1</version>
+    </dependency>
+    <!-- test -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
