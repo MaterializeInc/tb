@@ -45,6 +45,11 @@ psql> ALTER SYSTEM set wal_level to logical;
 bash> brew services restart postgres
 ```
 
+Tables should be created with their replica identity set to FULL.
+```
+psql> CREATE TABLE table (a int, b int);
+psql> ALTER TABLE table REPLICA IDENTITY FULL;
+```
 
 ## MySQL requirements.
 
