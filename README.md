@@ -51,6 +51,9 @@ psql> CREATE TABLE table (a int, b int);
 psql> ALTER TABLE table REPLICA IDENTITY FULL;
 ```
 
+The `alter-replica-identity.sh` script in the root of this repo will alter every
+table in a DB you specify to have `FULL` replica identity.
+
 ## MySQL requirements.
 
 You should be running MySQL with row-level binary logging. This means your 
