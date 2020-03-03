@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.materialize</groupId>
-  <artifactId>binlogger</artifactId>
-  <name>binlogger</name>
+  <artifactId>tb</artifactId>
+  <name>tb</name>
   <version>0.1-SNAPSHOT</version>
-  <url>http://www.github.com/rjnn/binlogger</url>
+  <url>https://github.com/MaterializeInc/tb</url>
   <build>
     <pluginManagement>
       <plugins>
@@ -78,6 +78,18 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>maven</id>
+      <name>Maven Central</name>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+    <repository>
+      <id>confluent</id>
+      <name>Confluent</name>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -93,6 +105,7 @@
     </dependency>
   </dependencies>
   <properties>
+    <jackson.version>2.10.0</jackson.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
