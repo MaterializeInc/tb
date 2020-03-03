@@ -80,6 +80,9 @@ public class Binlogger implements Consumer<SourceRecord> {
         parser.addArgument("-u", "--user").help("User").setDefault("postgres");
         parser.addArgument("--dir").help("Directory to output all serialized data to");
         parser.addArgument("-S", "--save-file").help("file to keep current replication status in");
+        parser.addArgument("--replication-slot").help("The postgres replication slot to use, "+
+                "must be distinct across multiple instances of tb").setDefault("tb");
+
 
         Namespace ns;
         try {
@@ -101,7 +104,7 @@ public class Binlogger implements Consumer<SourceRecord> {
             .with("database.server.name", "tb")
             // Need a distinct pg_replication_slots name, "debezium" is already taken via
             // standard Materialize setup.
-            .with("slot.name", "tb_debezium")
+            .with("slot.name", getNsString(ns, "replication_slot"))
             .with("plugin.name", "pgoutput")
             // TODO: we are writing to these files but the don't seem to be having an effect
             .with("offset.storage", "org.apache.kafka.connect.storage.FileOffsetBackingStore")
