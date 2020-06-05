@@ -112,5 +112,5 @@ binlog_format     = row
 ## Build and Run.
 
 To build and run `tb`, do the following:
-1. [mvn clean && mvn install] ()https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
+1. [mvn clean && mvn install](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
 2. Run the newly created .jar with `java -jar [path to jar] [args]`
