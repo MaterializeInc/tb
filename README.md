@@ -25,6 +25,7 @@ docker run --rm -v /tmp/tbshare:/tbshare \
     materialize/tb \
         -t postgres
             -p 5432
+            -d <database name>
             -H "$POSTGRES_HOST"
             -u "$POSTGRES_USER"
             --dir /tbshare/data
