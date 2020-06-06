@@ -38,7 +38,7 @@ command:
 ```sql
 CREATE SOURCE my_table
 FROM AVRO OCF '/tbshare/data/tb.public.my_table'
-WITH (tail = true);
+WITH (tail = true) ENVELOPE DEBEZIUM;
 ```
 
 After which the standard materialized experience will be available to you:
