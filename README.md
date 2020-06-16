@@ -28,6 +28,7 @@ docker run --rm -v /tmp/tbshare:/tbshare \
             -d <database name>
             -H "$POSTGRES_HOST"
             -u "$POSTGRES_USER"
+            -P "$POSTGRES_PASSWORD"
             --dir /tbshare/data
             --save-file /tbshare/status
 ```

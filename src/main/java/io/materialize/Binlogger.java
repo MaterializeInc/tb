@@ -78,6 +78,7 @@ public class Binlogger implements Consumer<SourceRecord> {
         parser.addArgument("-H", "--hostname").help("Database hostname").setDefault("localhost");
         parser.addArgument("-d", "--database").help("Database").setDefault("postgres");
         parser.addArgument("-u", "--user").help("User").setDefault("postgres");
+        parser.addArgument("-P", "--password").help("Database password").setDefault("postgres");
         parser.addArgument("--dir").help("Directory to output all serialized data to").setDefault(".");
         parser.addArgument("-S", "--save-file").help("file to keep current replication status in").setDefault("tb");
         parser.addArgument("--replication-slot").help("The postgres replication slot to use, "+
@@ -101,6 +102,7 @@ public class Binlogger implements Consumer<SourceRecord> {
             .with("database.port", getNsString(ns, "port"))
             .with("database.user", getNsString(ns, "user"))
             .with("database.dbname", getNsString(ns, "database"))
+            .with("database.password", getNsString(ns, "password"))
             .with("database.server.name", "tb")
             // Need a distinct pg_replication_slots name, "debezium" is already taken via
             // standard Materialize setup.
