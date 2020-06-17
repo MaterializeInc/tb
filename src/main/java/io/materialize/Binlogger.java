@@ -18,10 +18,13 @@ import java.io.*;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Log tables to <a href="https://avro.apache.org/docs/1.8.2/spec.html#Object+Container+Files">Avro Object Container Files</a>
+ * Log tables to <a href=
+ * "https://avro.apache.org/docs/1.8.2/spec.html#Object+Container+Files">Avro
+ * Object Container Files</a>
  */
 public class Binlogger implements Consumer<SourceRecord> {
     static FileOutputStream fos;
@@ -59,8 +62,9 @@ public class Binlogger implements Consumer<SourceRecord> {
                 output = new Output<>(outFile, schema);
                 schemaLogs.put(keyName, output);
             }
-            // TODO: it seems like it should be possible not create the intermediate object, or at least
-            //  to cache the schema parsing
+            // TODO: it seems like it should be possible not create the intermediate object,
+            // or at least
+            // to cache the schema parsing
             Object serializable = avroDataConverter.fromConnectData(s.valueSchema(), s.value());
             output.fileWriter.append(serializable);
         } catch (IOException ioe) {
@@ -81,9 +85,12 @@ public class Binlogger implements Consumer<SourceRecord> {
         parser.addArgument("-P", "--password").help("Database password").setDefault("postgres");
         parser.addArgument("--dir").help("Directory to output all serialized data to").setDefault(".");
         parser.addArgument("-S", "--save-file").help("file to keep current replication status in").setDefault("tb");
-        parser.addArgument("--replication-slot").help("The postgres replication slot to use, "+
-                "must be distinct across multiple instances of tb").setDefault("tb");
-
+        parser.addArgument("--replication-slot")
+                .help("The postgres replication slot to use, " + "must be distinct across multiple instances of tb")
+                .setDefault("tb");
+        parser.addArgument("--whitelist").nargs("*").help(
+                "A list of tables to monitor, like so: --whitelist schemaName1.databaseName1 schemaName2.databaseName2")
+                .setDefault();
 
         Namespace ns;
         try {
@@ -97,26 +104,26 @@ public class Binlogger implements Consumer<SourceRecord> {
         String type = getNsString(ns, "type");
         String logDir = getNsString(ns, "dir");
 
-        Builder b = Configuration.create()
-            .with("database.hostname", getNsString(ns, "hostname"))
-            .with("database.port", getNsString(ns, "port"))
-            .with("database.user", getNsString(ns, "user"))
-            .with("database.dbname", getNsString(ns, "database"))
-            .with("database.password", getNsString(ns, "password"))
-            .with("database.server.name", "tb")
-            // Need a distinct pg_replication_slots name, "debezium" is already taken via
-            // standard Materialize setup.
-            .with("slot.name", getNsString(ns, "replication_slot"))
-            .with("plugin.name", "pgoutput")
-            // TODO: we are writing to these files but the don't seem to be having an effect
-            .with("offset.storage", "org.apache.kafka.connect.storage.FileOffsetBackingStore")
-            .with("offset.storage.file.filename", getNsString(ns, "save_file") + ".offsets")
-            .with("offset.flush.interval.ms", 5000)
-            .with("database.history", "io.debezium.relational.history.FileDatabaseHistory")
-            .with("database.history.file.filename", getNsString(ns, "save_file") + ".history")
-            .with("provide.transaction.metadata", true)
-            .with("provide.transaction.metadata.file.filename", getNsString(ns, "save_file") + ".trx");
+        Builder b = Configuration.create().with("database.hostname", getNsString(ns, "hostname"))
+                .with("database.port", getNsString(ns, "port")).with("database.user", getNsString(ns, "user"))
+                .with("database.dbname", getNsString(ns, "database"))
+                .with("database.password", getNsString(ns, "password")).with("database.server.name", "tb")
+                // Need a distinct pg_replication_slots name, "debezium" is already taken via
+                // standard Materialize setup.
+                .with("slot.name", getNsString(ns, "replication_slot")).with("plugin.name", "pgoutput")
+                // TODO: we are writing to these files but the don't seem to be having an effect
+                .with("offset.storage", "org.apache.kafka.connect.storage.FileOffsetBackingStore")
+                .with("offset.storage.file.filename", getNsString(ns, "save_file") + ".offsets")
+                .with("offset.flush.interval.ms", 5000)
+                .with("database.history", "io.debezium.relational.history.FileDatabaseHistory")
+                .with("database.history.file.filename", getNsString(ns, "save_file") + ".history")
+                .with("provide.transaction.metadata", true)
+                .with("provide.transaction.metadata.file.filename", getNsString(ns, "save_file") + ".trx");
 
+        List<String> whitelistField = ns.<String>getList("whitelist");
+        if (whitelistField != null) {
+            b = b.with("table.whitelist", getListString(whitelistField));
+        }
 
         if (type.equals("mysql")) {
             b = b.with("connector.class", "io.debezium.connector.mysql.MySqlConnector").with("name",
@@ -150,6 +157,10 @@ public class Binlogger implements Consumer<SourceRecord> {
         return obj;
     }
 
+    private static String getListString(List<String> listOfStrings) {
+        return String.join(",", listOfStrings);
+    }
+
     /**
      * Helper class that knows where it's writing to, and what its schema is
      */
@@ -165,7 +176,8 @@ public class Binlogger implements Consumer<SourceRecord> {
             DataFileWriter<D> dfw = new DataFileWriter<>(dw);
             if (out.exists()) {
                 System.out.printf("Appending to existing binlog %s\n", out);
-                // TODO: figure out why the debezium config is not continuing from the offset it's recording
+                // TODO: figure out why the debezium config is not continuing from the offset
+                // it's recording
                 // this.fileWriter = dfw.appendTo(out);
                 // return;
                 throw new RuntimeException("Cannot restart from existing: " + out);
@@ -176,10 +188,7 @@ public class Binlogger implements Consumer<SourceRecord> {
 
         @Override
         public String toString() {
-            return "Output{" +
-                    "out=" + out +
-                    ", schema=" + schema +
-                    '}';
+            return "Output{" + "out=" + out + ", schema=" + schema + '}';
         }
     }
 
