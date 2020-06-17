@@ -33,6 +33,12 @@ docker run --rm -v /tmp/tbshare:/tbshare \
             --save-file /tbshare/status
 ```
 
+If you only want to monitor specific tables you can pass a whitelist flag like this:
+
+```bash
+    --whitelist schemaName1.tableName1,schemaName2.tableName2
+```
+
 And then, after starting `materialized`, running the appropriate create source
 command:
 
@@ -91,11 +97,11 @@ bash> brew services restart postgres
 ```
 
 Tables should be created with their replica identity set to FULL.
+
 ```
 psql> CREATE TABLE table (a int, b int);
 psql> ALTER TABLE table REPLICA IDENTITY FULL;
 ```
-
 
 The `alter-replica-identity.sh` script in the root of this repo will alter every
 table in a DB you specify to have `FULL` replica identity.
@@ -114,5 +120,6 @@ binlog_format     = row
 ## Build and Run.
 
 To build and run `tb`, do the following:
+
 1. [mvn clean && mvn install](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html)
 2. Run the newly created .jar with `java -jar [path to jar] [args]`

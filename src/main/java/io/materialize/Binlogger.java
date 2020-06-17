@@ -21,7 +21,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Log tables to <a href="https://avro.apache.org/docs/1.8.2/spec.html#Object+Container+Files">Avro Object Container Files</a>
+ * Log tables to <a href="https://avro.apache.org/docs/1.8.2/spec.html#Object+Container+Files">
+ * Avro Object Container Files</a>
  */
 public class Binlogger implements Consumer<SourceRecord> {
     static FileOutputStream fos;
@@ -81,9 +82,13 @@ public class Binlogger implements Consumer<SourceRecord> {
         parser.addArgument("-P", "--password").help("Database password").setDefault("postgres");
         parser.addArgument("--dir").help("Directory to output all serialized data to").setDefault(".");
         parser.addArgument("-S", "--save-file").help("file to keep current replication status in").setDefault("tb");
-        parser.addArgument("--replication-slot").help("The postgres replication slot to use, "+
-                "must be distinct across multiple instances of tb").setDefault("tb");
-
+        parser.addArgument("--replication-slot")
+                .help("The postgres replication slot to use, must be distinct across multiple instances of tb")
+                .setDefault("tb");
+        parser.addArgument("--whitelist").help(
+                "A csv-separated list of tables to monitor, like so: " +
+                "--whitelist schemaName1.databaseName1,schemaName2.databaseName2")
+                .setDefault();
 
         Namespace ns;
         try {
@@ -117,6 +122,10 @@ public class Binlogger implements Consumer<SourceRecord> {
             .with("provide.transaction.metadata", true)
             .with("provide.transaction.metadata.file.filename", getNsString(ns, "save_file") + ".trx");
 
+        String whitelistField = ns.getString("whitelist");
+        if (whitelistField != null) {
+            b = b.with("table.whitelist", whiteListField);
+        }
 
         if (type.equals("mysql")) {
             b = b.with("connector.class", "io.debezium.connector.mysql.MySqlConnector").with("name",
