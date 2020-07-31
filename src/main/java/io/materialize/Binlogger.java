@@ -114,7 +114,7 @@ public class Binlogger implements Consumer<SourceRecord> {
             // TODO: we are writing to these files but the don't seem to be having an effect
             .with("offset.storage", "org.apache.kafka.connect.storage.FileOffsetBackingStore")
             .with("offset.storage.file.filename", getNsString(ns, "save_file") + ".offsets")
-            .with("offset.flush.interval.ms", 5000)
+            .with("offset.flush.interval.ms", 100)
             .with("database.history", "io.debezium.relational.history.FileDatabaseHistory")
             .with("database.history.file.filename", getNsString(ns, "save_file") + ".history")
             .with("provide.transaction.metadata", true)
