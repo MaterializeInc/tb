@@ -87,9 +87,7 @@ public class Binlogger implements Consumer<SourceRecord> {
                 .setDefault("tb");
         parser.addArgument("--whitelist").help(
                 "A csv-separated list of tables to monitor, like so: " +
-                "--whitelist schemaName1.databaseName1,schemaName2.databaseName2")
-                .setDefault();
-
+                "--whitelist schemaName1.databaseName1,schemaName2.databaseName2");
         Namespace ns;
         try {
             ns = parser.parseArgs(args);
