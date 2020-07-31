@@ -122,8 +122,8 @@ public class Binlogger implements Consumer<SourceRecord> {
             .with("provide.transaction.metadata", true)
             .with("provide.transaction.metadata.file.filename", getNsString(ns, "save_file") + ".trx");
 
-        String whitelistField = ns.getString("whitelist");
-        if (whitelistField != null) {
+        String whiteListField = ns.getString("whitelist");
+        if (whiteListField != null) {
             b = b.with("table.whitelist", whiteListField);
         }
 

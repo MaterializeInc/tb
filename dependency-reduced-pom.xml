@@ -105,9 +105,9 @@
     </dependency>
   </dependencies>
   <properties>
-    <jackson.version>2.10.0</jackson.version>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <jackson.version>2.10.0</jackson.version>
   </properties>
 </project>
