@@ -1,6 +1,13 @@
 **t**ail **b**inlogs
 ====================
 
+⚠️ **tb has moved to the main Materialize repository.** ⚠️
+
+* New codebase home: https://github.com/MaterializeInc/materialize/tree/main/misc/tb
+* File new issues against https://github.com/MaterializeInc/materialize/issues.
+
+----
+
 `tb` tails database binlogs. You point it at a database, and it streams every
 write that is made to the database into an [Avro Object Container File][ocf]
 per table.
